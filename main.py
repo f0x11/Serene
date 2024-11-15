@@ -1,10 +1,14 @@
+import os
 from zhipuai import ZhipuAI
+from dotenv import load_dotenv
 
-APIKEY = ''
+load_dotenv()  # 加载.env文件中的环境变量到os.environ
+GLM_KEY = os.environ.get("GLM_KEY")
+print(GLM_KEY)
 
 
-def get_completions(content):
-    client = ZhipuAI(api_key=APIKEY)  # 请填写您自己的APIKey
+def get_completions(tool, content):
+    client = ZhipuAI(api_key=GLM_KEY)  # 请填写您自己的APIKey
     response = client.chat.completions.create(
         model="glm-4-flash",  # 请填写您要调用的模型名称
         messages=[
@@ -30,9 +34,9 @@ def get_completions(content):
     )
     res_text = response.choices[0].message.content.strip('```').strip('python')
 
-    with open('tool1.py', 'wb') as file:
+    with open(tool, 'wb') as file:
         file.write(res_text.encode('utf-8'))
 
 
 if __name__ == '__main__':
-    get_completions('帮我写一个工具，:v')
+    get_completions('tool1.py', '帮我写一个工具，:v')
